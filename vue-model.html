@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <p>用户名是{{username}}</p>
+        <input type="text" v-model.trim.lazy="username">
+        <p>选中的省份是{{province}}</p>
+        <select v-model="province">
+            <option value="">请选择</option>
+            <option value="1">北京</option>
+            <option value="2">河北</option>
+            <option value="3">河南</option>
+        </select>
+        <br />
+        <input type="text" v-model.number="n1">+<input type="text" v-model.number="n2">=<span>{{n1+n2}}</span>
+        <p v-if="isOK">请求成功！（v-if控制）</p>
+        <p v-show="isOK" @click="show">请求成功！（v-show控制）</p>
+        <p>{{num}}</p>
+        <div v-if="num<0.3">
+            随机数小于0.3
+        </div>
+        <div v-else-if="num>=0.3&&num<0.6">
+            随机数大于或等于0.3并小于0.6
+        </div>
+        <div v-else>
+            随机数大于或等于0.6
+        </div>
+        <p v-for="(item,index) in list" :key="item.id" :title="item.name+'-'+item.id">
+            index:{{index}}id:{{item.id}},name:{{item.name|capitalize|toUpperString(5)}}
+        </p>
+    </div>
+    <div id="test">
+        <p v-for="(item,index) in list" :key="item.id" :title="item.name+'-'+item.id">
+            index:{{index}}id:{{item.id}},name:{{item.name|toUpperString}}
+        </p>
+    </div>
+</body>
+<script src="./lib/jquery-v3.6.0.js"></script>
+<script src="./lib/vue-2.6.12.js"></script>
+<script src="./lib/axios.js"></script>
+<script>
+    Vue.filter("toUpperString", (str, len = 10) => {
+        str = str.charAt(0).toUpperCase() + str.charAt(1).toUpperCase() + str.slice(2) + "~~";
+        return str.length <= len ? str : str.slice(0, len) + "...";
+    });
+    const vm = new Vue({
+        el: "#app",
+        data: {
+            username: '张三',
+            province: '3',
+            n1: 1,
+            n2: 2,
+            isOK: true,
+            num: Math.random(),
+            list: [
+                { id: 1, name: 'zser' },
+                { id: 2, name: 'lsty' },
+                { id: 3, name: 'Wiuj' }
+            ],
+            info: {
+                username: 'admin'
+            },
+            r: 0,
+            g: 0,
+            b: 0
+        },
+        computed: {
+            rgb() { return `rgb(${this.r},${this.g},${this.b})` }   //计算属性
+        },
+        methods: {
+            show() {
+                console.log(this.rgb)
+            }
+        },
+        watch: {         //侦听器
+            // username(newVal, oldVal) {
+            //     console.log(newVal + "//" + oldVal);
+            // }
+            async username(newVal) {
+                console.log(newVal);
+                if (newVal === '') return;
+                // const { data: res } = await axios.get("http://127.0.0.1/api/finduser/" + newVal);
+                // $.get("http://127.0.0.1/api/finduser/" + newVal, function (res) {
+                //     alert("11111111");
+                //     console.log(res);
+                // });
+                const { data } = await axios.get("http://127.0.0.1/api/finduser/" + newVal);
+                console.log(data.res);
+            }
+            // username: {
+            //     handler: async function (newVal) {
+            //         console.log(newVal);
+            //         if (newVal === '') return;
+            //         // const { data: res } = await axios.get("http://127.0.0.1/api/finduser/" + newVal);
+            //         $.get("http://127.0.0.1/api/finduser/" + newVal, function (res) {
+            //             alert("11111111");
+            //             console.log(res);
+            //         });
+            //     },
+            //     immediate: true  //初次渲染好后，就立即触发当前的watch侦听器
+            // },
+            // info: {
+            //     handler(newVal) {
+            //         alert("1");
+            //         console.log(newVal.username);
+            //     },
+            //     deep: true //监听对象的属性值如果发生变化，设置后可以进行监听
+            // },
+            // 'info.username': {
+            //     handler(newVal) {
+            //         alert("1");
+            //         console.log(newVal.username);
+            //     }
+            // }
+        },
+        filters: {              //过滤器
+            capitalize(str) {              //把首字母转为大写
+                return str.charAt(0).toUpperCase() + str.slice(1) + "--"
+            }
+        }
+    });
+    const test = new Vue({
+        el: "#test",
+        data: {
+
+            list: [
+                { id: 1, name: 'zs' },
+                { id: 2, name: 'lsooo' },
+                { id: 3, name: 'WW' }
+            ]
+        },
+    });
+</script>
+
+</html>

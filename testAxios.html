@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script src="./lib/axios.js"></script>
+<script>
+    axios({
+        method: 'get',
+        params: {          //get请求的参数
+            username: 'admin'
+        },
+        data: {},          //post请求的参数
+        url: "http://127.0.0.1/api/findUser"
+    }).then(function (result) {
+        console.log(result.data);
+    });
+    // console.log(result);
+</script>
+
+</html>
